@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GardenMath - Garden Bed Math That Holds Up</title>
+<meta name="description" content="Plants per bed by real spacing, seed counts with germination honesty, succession plantings that fit the season, and yield estimates with the catalog optimism removed.">
+<link rel="canonical" href="https://ilanis-agent.github.io/gardenmath/">
+<meta property="og:title" content="GardenMath - Garden Bed Math That Holds Up">
+<meta property="og:description" content="Plants per bed by real spacing, seed counts with germination honesty, succession plantings that fit the season, and yield estimates with the catalog optimism removed.">
+<meta property="og:url" content="https://ilanis-agent.github.io/gardenmath/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#1d3d14">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#101a0b; --card:#182711; --ink:#eef6e2; --muted:#a7c48b;
+  --accent:#7fbf4d; --accent2:#d4e86b; --line:#36511f; --good:#8fd18a; --warn:#f2c14e; --bad:#e86a5a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:1rem}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;padding:1.6rem 0 1.2rem}
+h1{font-size:2.1rem;color:var(--accent2);letter-spacing:.5px}
+.tag{color:var(--muted);margin-top:.3rem;font-size:.98rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem;margin:1rem 0}
+.card h2{font-size:1.05rem;color:var(--accent);margin-bottom:.7rem}
+.row{display:flex;flex-wrap:wrap;gap:.9rem;align-items:flex-end;margin:.5rem 0}
+.field{display:flex;flex-direction:column;gap:.25rem}
+label{font-size:.8rem;color:var(--muted)}
+input,select{background:#0c1306;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:.45rem .6rem;font-size:1rem;width:8.5rem}
+input:focus,select:focus{outline:2px solid var(--accent)}
+button{background:var(--accent);color:#101a0b;border:0;border-radius:8px;padding:.5rem 1.1rem;font-size:.95rem;font-weight:700;cursor:pointer}
+button:hover{background:#97d166}
+.presets{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .2rem}
+.presets button{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:400;padding:.35rem .8rem;font-size:.85rem}
+.presets button:hover{border-color:var(--accent);color:var(--ink)}
+.big{font-size:1.3rem;font-weight:700;color:var(--accent2)}
+.result{margin-top:.6rem;font-size:1rem;min-height:1.4rem}
+.result small{color:var(--muted);display:block;margin-top:.25rem}
+.verdict-ok{color:var(--good)} .verdict-tight{color:var(--warn)} .verdict-bad{color:var(--bad)}
+.era{font-size:.85rem;color:var(--muted);margin-bottom:.6rem;font-style:italic}
+footer{margin:2rem 0 1rem;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:1rem}
+footer code{color:var(--accent)}
+details{margin-top:.4rem} summary{cursor:pointer;color:var(--muted);font-size:.85rem}
+table{border-collapse:collapse;margin-top:.5rem;font-size:.9rem}
+td,th{border:1px solid var(--line);padding:.3rem .6rem;text-align:left}
+th{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>&#127793; GardenMath</h1>
+<p class="tag">Garden bed math that holds up. Spacing, seeds, succession, yield - numbers you can plant on.</p>
+</header>
+
+<section class="card" id="c-bed">
+<h2>Plants per bed</h2>
+<p class="era">A 4x8 bed is not "a few plants" - at the right spacing it is a couple hundred carrots or exactly 32 tomatoes' worth of ambition (tomatoes want more room; read on).</p>
+<div class="presets" id="presets-bed"></div>
+<div class="row">
+  <div class="field"><label for="in-bw">bed width (ft)</label><input id="in-bw" type="number" min="1" max="20" step="0.5" value="4"></div>
+  <div class="field"><label for="in-bl">bed length (ft)</label><input id="in-bl" type="number" min="1" max="40" step="0.5" value="8"></div>
+  <div class="field"><label for="in-spacing">spacing (in)</label>
+    <select id="in-spacing">
+      <option value="2">2 in - carrot, radish (16/sq ft)</option>
+      <option value="3">3 in - onion, beet (16/sq ft)</option>
+      <option value="4">4 in - bush bean, spinach (9/sq ft)</option>
+      <option value="6" selected>6 in - lettuce, chard (4/sq ft)</option>
+      <option value="12">12 in - pepper, broccoli (1/sq ft)</option>
+      <option value="18">18 in - tomato, cucumber</option>
+      <option value="24">24 in - zucchini, cabbage</option>
+    </select>
+  </div>
+</div>
+<button id="btn-bed">Bed math</button>
+<div class="result" id="out-bed"></div>
+</section>
+
+<section class="card" id="c-seed">
+<h2>Seed packet honesty</h2>
+<p class="era">Packet germination rates are for fresh seed in a lab. Your drawer-aged packet and real soil take their share first.</p>
+<div class="row">
+  <div class="field"><label for="in-want">plants wanted</label><input id="in-want" type="number" min="1" step="1" value="32"></div>
+  <div class="field"><label for="in-germ">packet germination (%)</label><input id="in-germ" type="number" min="10" max="100" step="1" value="90"></div>
+  <div class="field"><label for="in-age">seed age (years)</label><input id="in-age" type="number" min="0" max="10" step="1" value="1"></div>
+  <div class="field"><label for="in-surv">survival to harvest (%)</label><input id="in-surv" type="number" min="30" max="100" step="5" value="80"></div>
+</div>
+<button id="btn-seed">Seed math</button>
+<div class="result" id="out-seed"></div>
+</section>
+
+<section class="card" id="c-succ">
+<h2>Succession plantings</h2>
+<p class="era">One sowing is one harvest. Staggered sowings turn a season into a conveyor belt - if the window fits them.</p>
+<div class="row">
+  <div class="field"><label for="in-window">frost-free window (days)</label><input id="in-window" type="number" min="30" max="365" step="5" value="150"></div>
+  <div class="field"><label for="in-dtm">days to maturity</label><input id="in-dtm" type="number" min="20" max="150" step="1" value="60"></div>
+  <div class="field"><label for="in-stagger">sow every (days)</label><input id="in-stagger" type="number" min="7" max="60" step="1" value="21"></div>
+</div>
+<button id="btn-succ">Succession math</button>
+<div class="result" id="out-succ"></div>
+</section>
+
+<section class="card" id="c-yield">
+<h2>Yield honesty</h2>
+<p class="era">Seed catalogs photograph the best plant of the best year. Plan the pantry on a reality factor, not the photo.</p>
+<div class="row">
+  <div class="field"><label for="in-yplants">plants</label><input id="in-yplants" type="number" min="1" step="1" value="32"></div>
+  <div class="field"><label for="in-ypp">catalog yield (lb/plant)</label><input id="in-ypp" type="number" min="0.1" max="50" step="0.1" value="10"></div>
+  <div class="field"><label for="in-factor">reality factor</label>
+    <select id="in-factor">
+      <option value="0.9">0.9 - experienced, irrigated, lucky</option>
+      <option value="0.7" selected>0.7 - a good real garden</option>
+      <option value="0.5">0.5 - first year, learning curve</option>
+    </select>
+  </div>
+</div>
+<button id="btn-yield">Yield math</button>
+<div class="result" id="out-yield"></div>
+</section>
+
+<section class="card" id="c-why">
+<h2>Why these numbers</h2>
+<details><summary>The assumptions, stated honestly</summary>
+<table>
+<tr><th>Constant</th><th>Value</th><th>Why</th></tr>
+<tr><td>Square-foot densities</td><td>1, 4, 9, 16 per sq ft</td><td>Mel Bartholomew's square-foot gardening standard, from 12/6/4/3-inch spacing on 144 sq in</td></tr>
+<tr><td>Intensive vs rows</td><td>36-inch rows are for tractors</td><td>Row spacing serves wheel hoes and machines, not a raised bed you reach into</td></tr>
+<tr><td>Germination decay</td><td>about 15% per year</td><td>Seed in a drawer loses vigor roughly geometrically; cool and dry slows it, warmth kills it</td></tr>
+<tr><td>Survival to harvest</td><td>80%</td><td>Cutworms, thinning, and weather take their share between sprout and plate</td></tr>
+<tr><td>Reality factor</td><td>0.5-0.9 of catalog yield</td><td>Catalogs quote the best plant of the best year; a real bed averages lower</td></tr>
+</table>
+<p style="margin-top:.5rem;color:var(--muted);font-size:.85rem">Soil, sun, water and your climate move every number here. The bed tells you the truth by July.</p>
+</details>
+</section>
+
+<footer>
+<p><strong>GardenMath</strong> - part of the App Factory collection. Honest small tools, one good idea at a time.</p>
+<p>Source: <code>engine.js</code> (pure functions, tested) &middot; <code>app.html</code> (this UI) &middot; <code>README.md</code></p>
+</footer>
+</div>
+</body>
+</html>
